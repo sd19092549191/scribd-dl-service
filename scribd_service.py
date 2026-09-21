@@ -199,7 +199,8 @@ async function go(){
   if(!u){m.textContent='请输入链接';return}
   b.disabled=true;m.textContent='解析中...';
   try{
-    const r=await fetch('/api/link?url='+encodeURIComponent(u));
+    const tk=new URLSearchParams(location.search).get('token')||'';
+    const r=await fetch('/api/link?url='+encodeURIComponent(u)+(tk?'&token='+encodeURIComponent(tk):''));
     const j=await r.json();
     if(!r.ok) throw new Error(j.detail||('HTTP '+r.status));
     m.innerHTML='✓ 文件名: <b>'+j.filename+'</b> · <a class="ok" href="'+j.direct_url+'" download>点此下载</a>（链接 5 分钟内有效，已自动开始）';
@@ -211,5 +212,7 @@ async function go(){
 
 
 @app.get("/")
-def index():
+def index(request: Request, token: str = ""):
+    if TOKEN and token != TOKEN:
+        raise HTTPException(401, "invalid token")
     return HTMLResponse(PAGE)
