@@ -1,0 +1,10 @@
+services:
+  scribd-dl:
+    build: .
+    container_name: scribd-dl
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8090:8090"
+    environment:
+      - SCRIBD_COOKIE=${SCRIBD_COOKIE}
+      - SCRIBD_TOKEN=${SCRIBD_TOKEN:-}
